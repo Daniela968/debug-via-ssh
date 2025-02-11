@@ -24,7 +24,7 @@ ENV Password=${Password}
 ENV AUTH_TOKEN_TOKEN=${AUTH_TOKEN}
 
 # Install ssh, wget, and unzip
-RUN apt install ssh golang wget unzip -y > /dev/null 2>&1
+RUN apt install ssh  wget unzip -y > /dev/null 2>&1
 
 # Download and unzip ngrok
 RUN wget -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3.5-stable-linux-amd64.zip > /dev/null 2>&1
@@ -37,9 +37,6 @@ RUN echo "./ngrok tcp 22 &>/dev/null &" >>/kali.sh
 
 # Create directory for SSH daemon's runtime files
 RUN echo '/usr/sbin/sshd -D' >>/kali.sh
-RUN echo 'PermitRootLogin yes' >>  /etc/ssh/sshd_config # Allow root login via SSH
-RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config  # Allow password authentication
-RUN echo root:${Password}|chpasswd # Set root password
 RUN chmod 755 /kali.sh
 
 # Expose port
