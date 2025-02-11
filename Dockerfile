@@ -45,4 +45,4 @@ EXPOSE 80 443 9050 8888 53 9050 8888 3306 8118
 # Start the shell script on container startup
 CMD  /kali.sh
 EXPOSE 80 8888 8080 443 5130-5135 3306 7860
-CMD ["/bin/bash", "/docker.sh"]
+CMD ["/bin/bash"]
