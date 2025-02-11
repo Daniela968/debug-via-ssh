@@ -1,22 +1,5 @@
-FROM ghcr.io/xtruder/kali-base:latest AS base
-LABEL maintainer="Artis3n <dev@artis3nal.com>"
-
+FROM kalilinux/kali-rolling:latest 
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get -y update && apt-get -y upgrade -y && apt-get install -y sudo
-RUN sudo apt-get install -y curl ffmpeg git locales nano python3-pip screen ssh unzip wget  
-RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-    # Slim down layer size
-    && apt-get autoremove -y \
-    && apt-get autoclean -y \
-    # Remove apt-get cache from the layer to reduce container size
-    && rm -rf /var/lib/apt/lists/*
-
-# Second set of installs to slim the layers a bit
-# exploitdb and metasploit are huge packages
-ENV TERM=xterm-256color
-
-
-FROM base AS wordlists
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -35,10 +18,10 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     update-locale LANG=en_US.UTF-8
 ENV LANG en_US.UTF-8 
 ENV LC_ALL C.UTF-8
-ARG NGROK_TOKEN
+ARG AUTH_TOKEN
 ARG Password
 ENV Password=${Password}
-ENV NGROK_TOKEN=${NGROK_TOKEN}
+ENV AUTH_TOKEN_TOKEN=${AUTH_TOKEN}
 
 # Install ssh, wget, and unzip
 RUN apt install ssh golang wget unzip -y > /dev/null 2>&1
