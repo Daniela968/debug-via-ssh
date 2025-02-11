@@ -1,4 +1,5 @@
-FROM debian
+FROM kalilinux/kali-rolling
+
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG DEBIAN_FRONTEND=noninteractive
