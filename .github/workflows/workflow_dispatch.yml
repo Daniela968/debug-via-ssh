@@ -1,17 +1,4 @@
-
-      - name: Run SSH4Me Action
-        uses: Jisan09/SSH4Me@main
-        env:
-          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-
-          push: true
-          tags: quay.io/ydrag0n/pterodactyl-vps-egg:latest,quay.io/ydrag0n/pterodactyl-vps-egg:${{ github.ref_name }}
-          labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=target
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-      - name: Run SSH4Me Action
+    - name: Run SSH4Me Action
         uses: Jisan09/SSH4Me@main
         env:
           AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
@@ -19,3 +6,7 @@
           
       cache-from: type=gha
           cache-to: type=gha,mode=max
+
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+  
