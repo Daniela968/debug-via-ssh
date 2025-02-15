@@ -28,6 +28,6 @@ RUN wget -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux
     && chmod 755 /docker.sh
 
 EXPOSE 80 8888 8080 443 5130-5135 3306 7860
-CMD ["/bin/bash", "/tmate.sh"]
+CMD ["/bin/bash", "/docker-entrypoint.sh"]
 
 WORKDIR /root
