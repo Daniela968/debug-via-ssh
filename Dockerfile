@@ -1,9 +1,9 @@
-FROM kalilinux/kali-rolling
-
-ARG DEBIAN_FRONTEND=noninteractive
+# You can change the base image to any other image you want.
+FROM catub/core:bullseye
 
 ARG AUTH_TOKEN
-ARG PASSWORD
+ARG PASSWORD=rootuser
+
 # Install packages and set locale
 RUN apt-get update \
     && apt-get install -y locales nano ssh sudo python3 curl wget \
@@ -28,6 +28,4 @@ RUN wget -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux
     && chmod 755 /docker.sh
 
 EXPOSE 80 8888 8080 443 5130-5135 3306 7860
-CMD ["/bin/bash", "/docker-entrypoint.sh"]
-
-WORKDIR /root
+CMD ["/bin/bash", "/docker.sh"]
