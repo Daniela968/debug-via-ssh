@@ -1,9 +1,15 @@
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+---
+name: Dispatch a SSH session
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Leave only desired OS in the field'
+        required: true
+        default: ubuntu-20.04 
+      
+
 jobs:
   start_ssh_session:
     runs-on: ${{ github.event.inputs.os }}
