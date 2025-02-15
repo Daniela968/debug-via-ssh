@@ -1,4 +1,4 @@
-FROM kalilinux/kali-rolling
+FROM ubuntu-latest
 
 ARG DEBIAN_FRONTEND=noninteractive
 
