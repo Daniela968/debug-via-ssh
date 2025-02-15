@@ -1,21 +1,46 @@
 ---
-name: Dispatch a SSH session
+name: Docker Image CI
 
 on:
-  workflow_dispatch:
-    inputs:
-      os:
-        description: 'Leave only desired OS in the field'
-        required: true
-        default: ubuntu-20.04
+  pull_request:
+    branches:
+      - main
+
+env:
+  container: kali-${{github.sha}}
 
 jobs:
-  start_ssh_session:
-    runs-on: ${{ github.event.inputs.os }}
-    name: Start the SSH session
+
+  lint:
+    runs-on: ubuntu-latest
+
     steps:
-    - name: Start SSH session
-      uses: luchihoratiu/debug-via-ssh@main
-      with:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-        SSH_PASS: ${{ secrets.SSH_PASS }}
+      - uses: actions/checkout@v4.1.1
+
+      # May get race conditions due to https://github.com/hadolint/hadolint-action/issues/44
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+
+  goss:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - uses: docker/setup-buildx-action@v3.3.0
+
+      - name: Install Goss
+        uses: e1himself/goss-installation-action@v1.2.1
+      
+      - name: Build the Docker image
+        uses: docker/build-push-action@v6.6.1
+        with:
+          push: false
+          target: wordlists
+          tags: ${{ env.container }}:test
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      - name: Test the image
+        run: dgoss run -t ${{ env.container }}:test
