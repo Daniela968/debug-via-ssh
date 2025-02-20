@@ -1,25 +1,38 @@
-FROM ubuntu-20.04
+FROM Ubuntu
 
-ARG DEBIAN_FRONTEND=noninteractive
 
-ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get -y update && apt-get -y upgrade -y && apt-get install -y sudo
-RUN sudo apt-get install -y curl ffmpeg git openssh-server locales nano python3-pip screen unzip wget  
-RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+# prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# update dependencies
+RUN apt update
+RUN apt upgrade -y
+
 ENV LANG en_US.utf8
+
+# Define arguments and environment variables
 ARG NGROK_TOKEN
-ENV NGROK_TOKEN=${NGROK_TOKEN}
-ARG Password 
+ARG Password
 ENV Password=${Password}
-RUN wget -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip
+ENV NGROK_TOKEN=${NGROK_TOKEN}
+
+# Install ssh, wget, and unzip
+RUN apt install ssh wget unzip -y > /dev/null 2>&1
+# Download and unzip ngrok
+RUN wget -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip > /dev/null 2>&1
 RUN unzip ngrok.zip
-RUN echo "./ngrok config add-authtoken ${NGROK_TOKEN} &&" >>/start
-RUN echo "./ngrok tcp --region ap 22 &>/dev/null &" >>/start
-RUN echo '/usr/sbin/sshd -D' >>/start
-RUN echo 'PermitRootLogin yes' >>  /etc/ssh/sshd_config 
-RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
-RUN echo root:kaal|chpasswd
-RUN service ssh start
-RUN chmod 755 /start
-EXPOSE 80 8888 8080 443 5130 5131 5132 5133 5134 5135 3306
-CMD  /start
+# Create shell script
+RUN echo "./ngrok config add-authtoken ${NGROK_TOKEN} &&" >>/kali.sh
+RUN echo "./ngrok tcp 5900 &>/dev/null &" >>/kali.sh
+ARG USER=root
+ENV USER=${USER}
+
+
+RUN chmod 755 /kali.sh
+RUN /kali.sh
+
+COPY /root /
+
+# ports and volumes
+EXPOSE 3000
+VOLUME /config
